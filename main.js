@@ -1,23 +1,47 @@
-var http = require("http");
+let http = require("http");
+require("dotenv").config()
 
-
+//axios
 global.__base = __dirname + '/';
 global.__pathFrameWork = __base + 'frame_work/';
 
 // let app = require(__pathFrameWork + 'app')
-var service = http.createServer(function(req, res){
-    switch(req.url){
-        case "/login":
-            login(req, res)
-            break
-        default:
-            res.writeHead(404, {'Content-Type':'application/json' })
-            res.end()
+let service = http.createServer(function(req, res){
+    console.log(req.method)
+    // midleware()
+    if(req.method === 'GET'){
+        switch(req.url){
+            case "/":
+                console.log("service!!!!")
+                let data = {
+                    name: "linh",
+                    email: "dttl@gmail.com"
+                }
+                res.writeHead(200, {'Content-Type':'application/json' })
+                res.end(JSON.stringify(data))
+            default:
+                res.writeHead(404, {'Content-Type':'application/json' })
+                res.end("404 not found!!!")
+        }
+    } else if(req.method === 'POST'){
+        switch(req.url){
+            case "/delete-data":
+                break
+            case "/login":
+                login(req, res)
+                break
+            case "/register":
+                register(req, res)
+                break
+            default:
+                res.writeHead(404, {'Content-Type':'application/json' })
+                res.end("404 not found!!!")
+        }
     }
 });
 
-
-var Port = normalizePort(process.env.PORT || 8988);
+console.log(process.env.PORT)
+let Port = normalizePort(process.env.PORT || 8988);
 service.listen(
     Port,
     console.log(
@@ -31,7 +55,7 @@ service.on("listening", onListening);
  * Normalize a port into a number, string, or false.
  */
 function normalizePort(val) {
-    var port = parseInt(val, 10);
+    let port = parseInt(val, 10);
 
     if (isNaN(port)) {
         // named pipe
@@ -54,7 +78,7 @@ function onError(error) {
         throw error;
     }
 
-    var bind = typeof Port === "string" ? "Pipe " + Port : "Port " + Port;
+    let bind = typeof Port === "string" ? "Pipe " + Port : "Port " + Port;
 
     // handle specific listen errors with friendly messages
     switch (error.code) {
@@ -75,8 +99,8 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 function onListening() {
-    var addr = service.address();
-    var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+    let addr = service.address();
+    let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
     console.log("Listening on " + bind);
 }
 let user = {
@@ -86,6 +110,7 @@ let user = {
 function getData(req){
     return new Promise((resolve, reject)=>{
         req.on("data", (chunk) => {
+            
             let str = decodeURIComponent(escape(String.fromCharCode(...chunk)))
             resolve(JSON.parse(str))
         });
@@ -95,10 +120,11 @@ function getData(req){
 async function login(req, res){
     let data = await getData(req)
     console.log(data)
-    if(data.username !== user.username || data.password !== user.password){
+    if(data.username !== user.username && data.password !== user.password){
         res.writeHead(400, {'Content-Type': 'application/json'})
         res.end("error input")
     }
+
     res.writeHead(200, {'Content-Type': 'application/json'})
     res.end(JSON.stringify(data))
 }
