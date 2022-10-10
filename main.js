@@ -12,13 +12,25 @@ let service = http.createServer(function(req, res){
     if(req.method === 'GET'){
         switch(req.url){
             case "/":
-                console.log("service!!!!")
-                let data = {
-                    name: "linh",
+                res.writeHead(200, {'Content-Type':'application/json' })
+                res.end()
+                break
+            case "/get-email":
+                console.log('email')
+                var data = {
                     email: "dttl@gmail.com"
                 }
                 res.writeHead(200, {'Content-Type':'application/json' })
                 res.end(JSON.stringify(data))
+                break
+            case "/weather":
+                res.writeHead(200, {'Content-Type':'application/json' })
+                res.end('weather')
+                break
+            case "/users":
+                res.writeHead(200, {'Content-Type':'application/json' })
+                res.end('users')
+                break
             default:
                 res.writeHead(404, {'Content-Type':'application/json' })
                 res.end("404 not found!!!")
@@ -26,6 +38,7 @@ let service = http.createServer(function(req, res){
     } else if(req.method === 'POST'){
         switch(req.url){
             case "/delete-data":
+
                 break
             case "/login":
                 login(req, res)
@@ -37,6 +50,12 @@ let service = http.createServer(function(req, res){
                 res.writeHead(404, {'Content-Type':'application/json' })
                 res.end("404 not found!!!")
         }
+    }else if (req.method === "PUT"){
+
+    }else if (req.method === "PATCH"){
+
+    }else if (req.method === "DELETE"){
+
     }
 });
 
